@@ -18,7 +18,7 @@
                         <?= $transaction['transaction_date']; ?>
                     </td>
                     <td>
-                        <?= $transaction['banking_date']; ?>
+                        <?= $transaction['banking_date'] ?? ''; ?>
                     </td>
                     <td>
                         <?= $transaction['description']; ?>
@@ -27,7 +27,7 @@
                         <?= $transaction['amount']; ?>
                     </td>
                     <td>
-                        <?= $transaction['account']; ?>
+                        <?= $transaction['source_account']; ?>
                     </td>
                 </tr>
             <?php endforeach; ?>
