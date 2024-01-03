@@ -18,5 +18,6 @@ if(isset($_GET['action'])) {
 	}
 }
 else {
-	(new HomeController())->display();
+	$controller = new HomeController();
+	$controller->render();
 }
