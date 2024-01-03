@@ -6,6 +6,7 @@
 	<meta charset="utf-8">
 	<title>Compta</title>
 	<link rel="stylesheet" href="css/layout.css">
+	<link rel="stylesheet" href="css/home.css">
 </head>
 
 <body>
@@ -18,9 +19,7 @@
 		</nav>
 	</header>
 
-	<main>
-		<?= $content; ?>
-	</main>
+	<?= $content; ?>
 </body>
 
 </html>

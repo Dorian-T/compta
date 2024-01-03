@@ -35,5 +35,7 @@ header li {
 /* Main */
 
 main {
+	margin: 0 auto;
 	position: sticky;
+	width: 50%;
 }
