@@ -3,7 +3,7 @@ CREATE DATABASE IF NOT EXISTS `compta`;
 USE `compta`;
 
 -- transaction table
-CREATE TABLE IF NOT EXISTS `transaction` (
+CREATE TABLE IF NOT EXISTS `transactions` (
     `id`               int(11)      NOT NULL AUTO_INCREMENT,
     `banking_date`     date         NOT NULL,
     `transaction_date` date         DEFAULT NULL,
