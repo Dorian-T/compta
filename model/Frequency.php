@@ -51,4 +51,37 @@ class Frequency {
 	public function getName(): string {
 		return $this->name;
 	}
+
+
+	// === Static Methods ===
+
+	/**
+	 * Gets all the frequencies from the database.
+	 *
+	 * @return array The frequencies from the database.
+	 */
+	public static function getAll(): array {
+		$database = new DatabaseConnection();
+		$frequencies = $database->execute('SELECT * FROM frequencies');
+		$allFrequencies = [];
+
+		foreach ($frequencies as $frequency)
+			$allFrequencies[] = new Frequency($frequency['id'], $frequency['name']);
+
+		return $allFrequencies;
+	}
+
+	/**
+	 * Gets a frequency by its id.
+	 *
+	 * @param int $id The id of the frequency.
+	 *
+	 * @return Frequency The frequency with the given id.
+	 */
+	public static function getById(int $id): Frequency {
+		$database = new DatabaseConnection();
+		$frequency = $database->execute('SELECT * FROM frequencies WHERE id = ?', [$id])[0];
+
+		return new Frequency($frequency['id'], $frequency['name']);
+	}
 }

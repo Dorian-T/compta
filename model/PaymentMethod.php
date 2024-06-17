@@ -51,4 +51,37 @@ class PaymentMethod {
 	public function getName(): string {
 		return $this->name;
 	}
+
+
+	// === Static Methods ===
+
+	/**
+	 * Gets all the payment methods from the database.
+	 *
+	 * @return array The payment methods.
+	 */
+	public static function getAll(): array {
+		$database = new DatabaseConnection();
+		$paymentMethods = $database->execute('SELECT * FROM payment_methods');
+		$paymentMethodsArray = [];
+
+		foreach($paymentMethods as $paymentMethod)
+			$paymentMethodsArray[] = new PaymentMethod($paymentMethod['id'], $paymentMethod['name']);
+
+		return $paymentMethodsArray;
+	}
+
+	/**
+	 * Gets a payment method by its id.
+	 *
+	 * @param int $id The id of the payment method.
+	 *
+	 * @return PaymentMethod The payment method.
+	 */
+	public static function getById(int $id): PaymentMethod {
+		$database = new DatabaseConnection();
+		$paymentMethod = $database->execute('SELECT * FROM payment_methods WHERE id = ?', [$id])[0];
+
+		return new PaymentMethod($paymentMethod['id'], $paymentMethod['name']);
+	}
 }

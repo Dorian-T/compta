@@ -2,6 +2,12 @@
 
 session_start();
 
+require_once 'model/BankAccount.php';
+require_once 'model/Category.php';
+require_once 'model/Frequency.php';
+require_once 'model/PaymentMethod.php';
+require_once 'model/Transaction.php';
+
 require_once 'model/model.php';
 
 require_once 'controller/controller.php';

@@ -75,4 +75,37 @@ class Category {
 	public function getType(): bool {
 		return $this->type;
 	}
+
+
+	// === Static Methods ===
+
+	/**
+	 * Gets all the categories from the database.
+	 *
+	 * @return array An array of categories.
+	 */
+	public static function getAll(): array {
+		$database = new DatabaseConnection();
+		$categories = $database->execute('SELECT * FROM categories');
+		$objects = [];
+
+		foreach($categories as $category)
+			$objects[] = new Category($category['id'], $category['name'], $category['type']);
+
+		return $objects;
+	}
+
+	/**
+	 * Gets a category by its id.
+	 *
+	 * @param int $id The id of the category.
+	 *
+	 * @return Category The category with the given id.
+	 */
+	public static function getById(int $id): Category {
+		$database = new DatabaseConnection();
+		$category = $database->execute('SELECT * FROM categories WHERE id = ?', [$id])[0];
+
+		return new Category($category['id'], $category['name'], $category['type']);
+	}
 }

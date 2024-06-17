@@ -163,4 +163,43 @@ class Transaction {
 	public function getCategory(): Category {
 		return $this->category;
 	}
+
+
+	// === Static Methods ===
+
+	/**
+	 * Creates a new transaction.
+	 *
+	 * @param DateTime $date The date of the transaction.
+	 * @param DateTime $bankingDate The banking date of the transaction.
+	 * @param string $description The description of the transaction.
+	 * @param float $amount The amount of the transaction.
+	 * @param BankAccount $bankAccount The bank account of the transaction.
+	 * @param PaymentMethod $paymentMethod The payment method of the transaction.
+	 * @param Frequency $frequency The frequency of the transaction.
+	 * @param Category $category The category of the transaction.
+	 */
+	public static function store(DateTime $date, DateTime $bankingDate = null, string $description, float $amount, BankAccount $bankAccount, PaymentMethod $paymentMethod, Frequency $frequency, Category $category): bool {
+		if($amount == 0)
+			throw new InvalidArgumentException('Amount cannot be 0.');
+		elseif($amount < 0 && $category->getType())
+			throw new InvalidArgumentException('Income cannot be negative.');
+		elseif($amount > 0 && !$category->getType())
+			throw new InvalidArgumentException('Expense cannot be positive.');
+
+		$database = new DatabaseConnection();
+		return $database->execute(
+			'INSERT INTO transactions (date, banking_date, description, amount, bank_account, payment_method, frequency, category) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+			[
+				$date->format('Y-m-d'),
+				empty($bankingDate) ? null : $bankingDate->format('Y-m-d'),
+				$description,
+				$amount,
+				$bankAccount->getId(),
+				$paymentMethod->getId(),
+				$frequency->getId(),
+				$category->getId()
+			]
+		) !== null;
+	}
 }

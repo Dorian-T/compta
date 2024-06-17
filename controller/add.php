@@ -3,19 +3,22 @@
 class AddController extends Controller {
 	public function render() {
 		if(isset($_POST['submit'])) {
-			$this->model->addTransaction(
-				$_POST['banking_date'],
-				$_POST['transaction_date'],
+			Transaction::store(
+				new DateTime($_POST['date']),
+				empty($_POST['banking_date']) ? null : new DateTime($_POST['banking_date']),
 				$_POST['description'],
 				$_POST['amount'],
-				$_POST['source_account'],
-				$_POST['target'],
-				$_POST['payment_method'],
-				$_POST['category'],
-				$_POST['subcategory']
+				BankAccount::getById($_POST['bank_account']),
+				PaymentMethod::getById($_POST['payment_method']),
+				Frequency::getById($_POST['frequency']),
+				Category::getById($_POST['category'])
 			);
 		}
 
+		$accounts = BankAccount::getAll();
+		$paymentMethods = PaymentMethod::getAll();
+		$frequencies = Frequency::getAll();
+		$categories = Category::getAll();
 		$transactions = $this->model->getLastTransactions();
 
 		require_once 'view/add.php';

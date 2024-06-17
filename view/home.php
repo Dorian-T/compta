@@ -35,7 +35,9 @@
     </table>
 </main>
 
-<?php $content = ob_get_clean(); ?>
+<?php
+$content = ob_get_clean();
 
 
-<?php require_once 'view/layout/layout.php'; ?>
+require_once 'view/layout/layout.php';
+?>
