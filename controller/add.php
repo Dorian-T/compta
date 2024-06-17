@@ -19,7 +19,7 @@ class AddController extends Controller {
 		$paymentMethods = PaymentMethod::getAll();
 		$frequencies = Frequency::getAll();
 		$categories = Category::getAll();
-		$transactions = $this->model->getLastTransactions();
+		$transactions = Transaction::getLastTransactions();
 
 		require_once 'view/add.php';
 	}

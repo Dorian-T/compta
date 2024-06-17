@@ -20,7 +20,7 @@ class Transaction {
 	/**
 	 * The banking date of the transaction.
 	 */
-	private DateTime $bankingDate;
+	private ?DateTime $bankingDate;
 
 	/**
 	 * The description of the transaction.
@@ -50,7 +50,7 @@ class Transaction {
 	/**
 	 * The category of the transaction.
 	 */
-	private Category $category;
+	private ?Category $category;
 	
 
 	// === Constructor ===
@@ -68,7 +68,7 @@ class Transaction {
 	 * @param Frequency $frequency The frequency of the transaction.
 	 * @param Category $category The category of the transaction.
 	 */
-	public function __construct(int $id, DateTime $date, DateTime $bankingDate, string $description, float $amount, BankAccount $bankAccount, PaymentMethod $paymentMethod, Frequency $frequency, Category $category) {
+	public function __construct(int $id, DateTime $date, DateTime $bankingDate = null, string $description, float $amount, BankAccount $bankAccount, PaymentMethod $paymentMethod, Frequency $frequency, Category $category = null) {
 		$this->id = $id;
 		$this->date = $date;
 		$this->bankingDate = $bankingDate;
@@ -106,7 +106,7 @@ class Transaction {
 	 *
 	 * @return DateTime The banking date of the transaction.
 	 */
-	public function getBankingDate(): DateTime {
+	public function getBankingDate(): ?DateTime {
 		return $this->bankingDate;
 	}
 
@@ -201,5 +201,34 @@ class Transaction {
 				empty($category) ? null : $category->getId()
 			]
 		) !== null;
+	}
+
+	/**
+	 * Gets the 10 last transactions.
+	 *
+	 * @param int $limit The number of transactions to get.
+	 *
+	 * @return array An array of Transaction objects.
+	 */
+	public static function getLastTransactions(): array {
+		$database = new DatabaseConnection();
+		$transactions = $database->execute('SELECT * FROM transactions ORDER BY date DESC LIMIT 10');
+		$objects = [];
+
+		foreach($transactions as $transaction) {
+			$objects[] = new Transaction(
+				$transaction['id'],
+				new DateTime($transaction['date']),
+				empty($transaction['banking_date']) ? null : new DateTime($transaction['banking_date']),
+				$transaction['description'],
+				$transaction['amount'],
+				BankAccount::getById($transaction['bank_account']),
+				PaymentMethod::getById($transaction['payment_method']),
+				Frequency::getById($transaction['frequency']),
+				empty($transaction['category']) ? null : Category::getById($transaction['category'])
+			);
+		}
+
+		return $objects;
 	}
 }

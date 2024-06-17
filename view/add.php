@@ -67,6 +67,7 @@
 		<thead>
 			<tr>
 				<th>Date</th>
+				<th>Date banquaire</th>
 				<th>Description</th>
 				<th>Montant</th>
 				<th>Compte</th>
@@ -75,11 +76,11 @@
 		<tbody>
 			<?php foreach($transactions as $transaction): ?>
 				<tr>
-					<td><?= $transaction['transaction_date']; ?></td>
-					<td><?= $transaction['banking_date'] ?? ''; ?></td>
-					<td><?= $transaction['description']; ?></td>
-					<td><?= $transaction['amount']; ?></td>
-					<td><?= $transaction['source_account']; ?></td>
+					<td><?= $transaction->getDate()->format('d/m/Y'); ?></td>
+					<td><?= $transaction->getBankingDate() === null ? '' : $transaction->getBankingDate()->format('d/m/Y'); ?></td>
+					<td><?= $transaction->getDescription(); ?></td>
+					<td><?= $transaction->getAmount(); ?></td>
+					<td><?= $transaction->getBankAccount()->getName(); ?></td>
 				</tr>
 			<?php endforeach; ?>
 		</tbody>
