@@ -179,12 +179,12 @@ class Transaction {
 	 * @param Frequency $frequency The frequency of the transaction.
 	 * @param Category $category The category of the transaction.
 	 */
-	public static function store(DateTime $date, DateTime $bankingDate = null, string $description, float $amount, BankAccount $bankAccount, PaymentMethod $paymentMethod, Frequency $frequency, Category $category): bool {
+	public static function store(DateTime $date, DateTime $bankingDate = null, string $description, float $amount, BankAccount $bankAccount, PaymentMethod $paymentMethod, Frequency $frequency, Category $category = null): bool {
 		if($amount == 0)
 			throw new InvalidArgumentException('Amount cannot be 0.');
-		elseif($amount < 0 && $category->getType())
+		elseif($category !== null && $amount < 0 && $category->getType())
 			throw new InvalidArgumentException('Income cannot be negative.');
-		elseif($amount > 0 && !$category->getType())
+		elseif($category !== null && $amount > 0 && !$category->getType())
 			throw new InvalidArgumentException('Expense cannot be positive.');
 
 		$database = new DatabaseConnection();
@@ -198,7 +198,7 @@ class Transaction {
 				$bankAccount->getId(),
 				$paymentMethod->getId(),
 				$frequency->getId(),
-				$category->getId()
+				empty($category) ? null : $category->getId()
 			]
 		) !== null;
 	}

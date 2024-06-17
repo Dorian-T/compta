@@ -38,8 +38,9 @@
 			<?php foreach ($categories as $category): ?>
 				<option class="<?= $category->getType() ?>" value="<?= $category->getID(); ?>"><?= $category->getName(); ?></option>
 			<?php endforeach; ?>
+			<option class="01" value="">Autre</option>
 		</select>
-		<script defer> <!-- TODO: Fix this -->
+		<!-- <script defer> // TODO: Fix this
 			document.getElementById('amount').addEventListener('change', function(e) {
 				var categorySelect = document.getElementById('category');
 				console.log(categorySelect);
@@ -56,7 +57,7 @@
 				});
 						
 			});
-		</script>
+		</script> -->
 
 		<input type="submit" name="submit" value="Ajouter" />
 	</form>

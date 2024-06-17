@@ -11,7 +11,7 @@ class AddController extends Controller {
 				BankAccount::getById($_POST['bank_account']),
 				PaymentMethod::getById($_POST['payment_method']),
 				Frequency::getById($_POST['frequency']),
-				Category::getById($_POST['category'])
+				empty($_POST['category']) ? null : Category::getById($_POST['category'])
 			);
 		}
 
