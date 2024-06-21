@@ -160,7 +160,7 @@ class Transaction {
 	 *
 	 * @return Category The category of the transaction.
 	 */
-	public function getCategory(): Category {
+	public function getCategory(): ?Category {
 		return $this->category;
 	}
 
@@ -262,7 +262,7 @@ class Transaction {
 											FROM transactions T JOIN bank_accounts B ON T.bank_account = B.id
 												JOIN payment_methods P ON T.payment_method = P.id
 												JOIN frequencies F ON T.frequency = F.id
-												JOIN categories C ON T.category = C.id
+												LEFT JOIN categories C ON T.category = C.id
 											ORDER BY date DESC, banking_date DESC, description ASC');
 		$objects = [];
 

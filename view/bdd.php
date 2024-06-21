@@ -54,8 +54,9 @@
 						</td>
 						<td>
 							<select name="category" required>
+								<option value="">Autre</option>
 								<?php foreach ($categories as $category): ?>
-									<option value="<?= $category->getId(); ?>" <?= $transaction->getCategory()->getId() === $category->getId() ? 'selected' : ''; ?>><?= $category->getName(); ?></option>
+									<option value="<?= $category->getId(); ?>" <?= $transaction->getCategory() !== null && $transaction->getCategory()->getId() === $category->getId() ? 'selected' : ''; ?>><?= $category->getName(); ?></option>
 								<?php endforeach; ?>
 							</select>
 						</td>
