@@ -11,14 +11,20 @@ require_once 'model/Transaction.php';
 require_once 'model/model.php';
 
 require_once 'controller/controller.php';
-require_once 'controller/home.php';
 require_once 'controller/add.php';
+require_once 'controller/bdd.php';
+require_once 'controller/home.php';
 
 if(isset($_GET['action'])) {
 	switch($_GET['action']) {
 		case 'add':
 			$add = new AddController();
 			$add->render();
+			break;
+
+		case 'bdd':
+			$bdd = new BDDController();
+			$bdd->render();
 			break;
 
 		default:

@@ -204,6 +204,86 @@ class Transaction {
 	}
 
 	/**
+	 * Updates a transaction.
+	 *
+	 * @param int $id The id of the transaction.
+	 * @param DateTime $date The date of the transaction.
+	 * @param DateTime $bankingDate The banking date of the transaction.
+	 * @param string $description The description of the transaction.
+	 * @param float $amount The amount of the transaction.
+	 * @param BankAccount $bankAccount The bank account of the transaction.
+	 * @param PaymentMethod $paymentMethod The payment method of the transaction.
+	 * @param Frequency $frequency The frequency of the transaction.
+	 * @param Category $category The category of the transaction.
+	 */
+	public static function update(int $id, DateTime $date, DateTime $bankingDate = null, string $description, float $amount, BankAccount $bankAccount, PaymentMethod $paymentMethod, Frequency $frequency, Category $category = null): bool {
+		if($amount == 0)
+			throw new InvalidArgumentException('Amount cannot be 0.');
+		elseif($category !== null && $amount < 0 && $category->getType())
+			throw new InvalidArgumentException('Income cannot be negative.');
+		elseif($category !== null && $amount > 0 && !$category->getType())
+			throw new InvalidArgumentException('Expense cannot be positive.');
+
+		$database = new DatabaseConnection();
+		return $database->execute(
+			'UPDATE transactions SET date = ?, banking_date = ?, description = ?, amount = ?, bank_account = ?, payment_method = ?, frequency = ?, category = ? WHERE id = ?',
+			[
+				$date->format('Y-m-d'),
+				empty($bankingDate) ? null : $bankingDate->format('Y-m-d'),
+				$description,
+				$amount,
+				$bankAccount->getId(),
+				$paymentMethod->getId(),
+				$frequency->getId(),
+				empty($category) ? null : $category->getId(),
+				$id
+			]
+		) !== null;
+	}
+
+	/**
+	 * Deletes a transaction.
+	 *
+	 * @param int $id The id of the transaction.
+	 */
+	public static function destroy(int $id): bool {
+		$database = new DatabaseConnection();
+		return $database->execute('DELETE FROM transactions WHERE id = ?', [$id]) !== null;
+	}
+
+	/**
+	 * Gets all transactions ordered by date descending.
+	 *
+	 * @return array An array of Transaction objects.
+	 */
+	public static function getAll(): array {
+		$database = new DatabaseConnection();
+		$transactions = $database->execute('SELECT T.id, T.date, T.banking_date, T.description, T.amount, B.id AS bank_account_id, B.name AS bank_account_name, P.id AS payment_method_id, P.name AS payment_method_name, F.id AS frequency_id, F.name AS frequency_name, C.id AS category_id, C.name AS category_name, C.type AS category_type
+											FROM transactions T JOIN bank_accounts B ON T.bank_account = B.id
+												JOIN payment_methods P ON T.payment_method = P.id
+												JOIN frequencies F ON T.frequency = F.id
+												JOIN categories C ON T.category = C.id
+											ORDER BY date DESC, banking_date DESC, description ASC');
+		$objects = [];
+
+		foreach($transactions as $transaction) {
+			$objects[] = new Transaction(
+				$transaction['id'],
+				new DateTime($transaction['date']),
+				empty($transaction['banking_date']) ? null : new DateTime($transaction['banking_date']),
+				$transaction['description'],
+				$transaction['amount'],
+				new BankAccount($transaction['bank_account_id'], $transaction['bank_account_name']),
+				new PaymentMethod($transaction['payment_method_id'], $transaction['payment_method_name']),
+				new Frequency($transaction['frequency_id'], $transaction['frequency_name']),
+				empty($transaction['category_id']) ? null : new Category($transaction['category_id'], $transaction['category_name'], $transaction['category_type'])
+			);
+		}
+
+		return $objects;
+	}
+
+	/**
 	 * Gets the 10 last transactions.
 	 *
 	 * @param int $limit The number of transactions to get.
