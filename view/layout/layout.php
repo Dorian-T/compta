@@ -6,10 +6,7 @@
 	<meta charset="utf-8">
 	<title>Compta</title>
 
-	<link rel="stylesheet" href="css/layout.css">
-	<link rel="stylesheet" href="css/home.css">
-	<link rel="stylesheet" href="css/add.css">
-	<link rel="stylesheet" href="css/bdd.css">
+	<link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
