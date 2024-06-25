@@ -19,11 +19,13 @@ INSERT INTO `frequencies` (`name`) VALUES
 
 -- Categories table
 INSERT INTO `categories` (`name`, `type`) VALUES
+    ('Epargne', 0),
     ('Loisir', 0),
     ('Polyenco', 0),
     ('Primaire', 0),
     ('Sport', 0),
     ('Scolaire', 0),
     ('Aide', 1),
+    ('Epargne', 1),
     ('Remboursement', 1),
     ('Salaire', 1);

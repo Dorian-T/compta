@@ -53,7 +53,7 @@
 							</select>
 						</td>
 						<td>
-							<select name="category" required>
+							<select name="category">
 								<option value="">Autre</option>
 								<?php foreach ($categories as $category): ?>
 									<option value="<?= $category->getId(); ?>" <?= $transaction->getCategory() !== null && $transaction->getCategory()->getId() === $category->getId() ? 'selected' : ''; ?>><?= $category->getName(); ?></option>
