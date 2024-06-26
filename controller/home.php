@@ -11,7 +11,13 @@ class HomeController extends Controller {
 	 * Renders the home page.
 	 */
 	public function render() {
-		$transactions = $this->model->getAllTransactions();
+		// Balance table
+		$accounts = BankAccount::getAll();
+
+		// Balance chart
+		$balances = Transaction::getBalances();
+		$incomes = Transaction::getIncomes();
+		$expenses = Transaction::getExpenses();
 
 		require_once 'view/home.php';
 	}

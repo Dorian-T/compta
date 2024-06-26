@@ -87,4 +87,14 @@ class BankAccount {
 
 		return new BankAccount($account['id'], $account['name']);
 	}
+
+	/**
+	 * Returns the balance of the bank account.
+	 *
+	 * @return float The balance of the bank account.
+	 */
+	public function getBalance(): float {
+		$database = new DatabaseConnection();
+		return $database->execute('SELECT SUM(amount) FROM transactions WHERE bank_account = ?', [$this->id])[0]['SUM(amount)'];
+	}
 }

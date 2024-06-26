@@ -311,4 +311,52 @@ class Transaction {
 
 		return $objects;
 	}
+
+	/**
+	 * Retrieves the balance of the transaction group by month.
+	 *
+	 * @return array The balance of the transaction group by month.
+	 */
+	public static function getBalances(): array {
+		$database = new DatabaseConnection();
+		$results = $database->execute('SELECT YEAR(date) AS year, MONTH(date) AS month, SUM(amount) AS total_amount FROM transactions GROUP BY YEAR(date), MONTH(date)');
+		$sumsByMonth = [];
+		foreach ($results as $result) {
+			$key = $result['year'] . '-' . sprintf('%02d', $result['month']); // Format: YYYY-MM
+			$sumsByMonth[$key] = $result['total_amount'];
+		}
+		return $sumsByMonth;
+	}
+
+	/**
+	 * Retrieves the expenses of the transaction group by month.
+	 *
+	 * @return array The expenses of the transaction group by month.
+	 */
+	public static function getExpenses(): array {
+		$database = new DatabaseConnection();
+		$results = $database->execute('SELECT YEAR(date) AS year, MONTH(date) AS month, SUM(amount) AS total_amount FROM transactions WHERE amount < 0 GROUP BY YEAR(date), MONTH(date)');
+		$expensesByMonth = [];
+		foreach ($results as $result) {
+			$key = $result['year'] . '-' . sprintf('%02d', $result['month']); // Format: YYYY-MM
+			$expensesByMonth[$key] = $result['total_amount'];
+		}
+		return $expensesByMonth;
+	}
+
+	/**
+	 * Retrieves the incomes of the transaction group by month.
+	 *
+	 * @return array The incomes of the transaction group by month.
+	 */
+	public static function getIncomes(): array {
+		$database = new DatabaseConnection();
+		$results = $database->execute('SELECT YEAR(date) AS year, MONTH(date) AS month, SUM(amount) AS total_amount FROM transactions WHERE amount > 0 GROUP BY YEAR(date), MONTH(date)');
+		$incomesByMonth = [];
+		foreach ($results as $result) {
+			$key = $result['year'] . '-' . sprintf('%02d', $result['month']); // Format: YYYY-MM
+			$incomesByMonth[$key] = $result['total_amount'];
+		}
+		return $incomesByMonth;
+	}
 }

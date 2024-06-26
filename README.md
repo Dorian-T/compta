@@ -1,7 +1,5 @@
 # Compta
 
-## Description
-
 Une application de comptabilité minimaliste.
 
 ## Fonctionnalités
@@ -23,3 +21,12 @@ Une application de comptabilité minimaliste.
 
 - Consultation de l'ensemble des transactions et possibilité de les modifier ou supprimer
 - Sauvegarde automatique de la base de donnée sur GitHub
+
+## TODO
+
+- [x] Solde des différents comptes et total général (instantané)
+- [x] Courbe revenu/dépense/solde (annuel)
+- [ ] Diagramme camembert des fréquences (mensuel ou annuel)
+- [ ] Diagramme camembert des catégories (mensuel ou annuel)
+- [ ] Améliorer ergonomie pour modifier des lignes
+- [ ] Ajouter les soldes des différents comptes dans la page d'ajout
