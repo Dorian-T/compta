@@ -2,8 +2,12 @@
 
 <main id="home">
 	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+	<script src="js/home.js"></script>
 
 	<table>
+		<caption>
+			<h2>Soldes</h2>
+		</caption>
 		<thead>
 			<tr>
 				<th>Compte</th>
@@ -22,6 +26,7 @@
 
 	<section id="balanceChart">
 		<h2>Évolution du solde</h2>
+
 		<select>
 			<?php
 			$years = array_unique(array_map(function($date) {
@@ -33,26 +38,32 @@
 				<option value="<?= $year ?>" <?= $year === date('Y') ? 'selected' : '' ?>><?= $year ?></option>
 			<?php endforeach; ?>
 		</select>
+
 		<canvas width="400" height="200"></canvas>
+
 		<script defer>
 			// Get data from PHP
-			var labels = <?= json_encode(array_keys($balances)) ?>;
+			var months = <?= json_encode(array_keys($balances)) ?>;
 			var balances = <?= json_encode(array_values($balances)) ?>;
 			var incomes = <?= json_encode(array_values($incomes)) ?>;
 			var expenses = <?= json_encode(array_values($expenses)) ?>;
 
-			// Declare variables outside the callback function
-			var filteredLabels, filteredBalances, filteredIncomes, filteredExpenses;
+			// Filter the data by year
+			var [filteredMonths, filteredBalances, filteredIncomes, filteredExpenses] = filterDataForBalanceChart(months, balances, incomes, expenses, '<?= date('Y') ?>');
 
-			// Get canvas
-			const balanceChart = document.querySelector('#balanceChart canvas');
-			myChart = null;
+			// Create the chart
+			const balanceCanvas = document.querySelector('#balanceChart canvas');
+			balanceChart = null;
+			balanceChart = createBalanceChart(balanceCanvas, balanceChart, filteredMonths, filteredBalances, filteredIncomes, filteredExpenses);
 
-			function filterData(year) {
-				filteredLabels = labels.filter(label => label.startsWith(year));
-				filteredBalances = balances.filter((_, index) => labels[index].startsWith(year));
-				filteredIncomes = incomes.filter((_, index) => labels[index].startsWith(year));
-				filteredExpenses = expenses.filter((_, index) => labels[index].startsWith(year));
+			// Update the chart when the year changes
+			document.querySelector('#balanceChart select').addEventListener('change', function() {
+				var year = this.value;
+				[filteredMonths, filteredBalances, filteredIncomes, filteredExpenses] = filterDataForBalanceChart(months, balances, incomes, expenses, year);
+				createBalanceChart(balanceCanvas, balanceChart, filteredMonths, filteredBalances, filteredIncomes, filteredExpenses);
+			});
+		</script>
+	</section>
 
 				updateChart();
 			}
