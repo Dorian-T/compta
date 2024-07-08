@@ -46,7 +46,7 @@ header a:hover, header a:active {
 /* Main */
 
 main {
-	padding: 20px 0;
+	padding: 20px;
 	position: sticky;
 	display: flex;
 	flex-direction: column;	

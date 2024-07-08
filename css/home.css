@@ -1,0 +1,40 @@
+#home {
+	display: grid;
+	grid-template-columns: repeat(12, 1fr);
+	max-width: 1200px;
+	margin: auto;
+
+	& h2 {
+		text-align: center;
+	}
+
+	& table {
+		grid-column: 1 / 4;
+		width: calc(100% - 20px);
+		margin: 10px;
+	}
+
+	& > *:not(table) {
+		width: 100%;
+	}
+
+	& #balanceChart {
+		grid-column: 4 / 13;
+	}
+
+	& #frequencyChart {
+		grid-column: 1 / 4;
+	}
+
+	& #categoryChart {
+		grid-column: 4 / 7;
+	}
+
+	& #categoryChart + * {
+		grid-column: 7 / 10;
+	}
+
+	& #categoryChart + * + * {
+		grid-column: 10 / 13;
+	}
+}

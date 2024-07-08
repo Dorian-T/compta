@@ -39,7 +39,7 @@
 			<?php endforeach; ?>
 		</select>
 
-		<canvas width="400" height="200"></canvas>
+		<canvas></canvas>
 
 		<script defer>
 			// Get data from PHP
@@ -81,7 +81,7 @@
 			<?php endforeach; ?>
 		</select>
 
-		<canvas width="400" height="200"></canvas>
+		<canvas></canvas>
 
 		<script defer>
 			// Get data from PHP
@@ -120,7 +120,7 @@
 			<?php endforeach; ?>
 		</select>
 
-		<canvas width="400" height="200"></canvas>
+		<canvas></canvas>
 
 		<script defer>
 			console.log("Hello world");
@@ -145,6 +145,14 @@
 				categoryChart = createCategoryChart(categoryCanvas, categoryChart, categories, filteredTransactionsByCategory);
 			});
 		</script>
+	</section>
+
+	<section>
+		<h2>Recettes par fréquence</h2>
+	</section>
+
+	<section>
+		<h2>Recettes par catégorie</h2>
 	</section>
 </main>
 
