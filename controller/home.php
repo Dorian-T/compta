@@ -19,6 +19,9 @@ class HomeController extends Controller {
 		$incomes = Transaction::getIncomes();
 		$expenses = Transaction::getExpenses();
 
+		// Frequency chart
+		$transactionsByFrequency = Transaction::getByFrequency();
+
 		require_once 'view/home.php';
 	}
 }

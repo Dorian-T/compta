@@ -359,4 +359,23 @@ class Transaction {
 		}
 		return $incomesByMonth;
 	}
+
+	/**
+	 * Retrieves the outcomes by frequency.
+	 *
+	 * @return array The outcomes by frequency.
+	 */
+	public static function getByFrequency(): array {
+		$database = new DatabaseConnection();
+		$results = $database->execute('SELECT F.name AS frequency, YEAR(T.date) AS year, MONTH(T.date) AS month, SUM(T.amount) AS total_amount
+										FROM transactions T JOIN frequencies F ON T.frequency = F.id
+										WHERE T.amount < 0
+										GROUP BY F.name, YEAR(T.date), MONTH(T.date)');
+		$sumsByFrequency = [];
+		foreach ($results as $result) {
+			$month = $result['year'] . '-' . sprintf('%02d', $result['month']); // Format: YYYY-MM
+			$sumsByFrequency[$result['frequency']][$month] = $result['total_amount'];
+		}
+		return $sumsByFrequency;
+	}
 }

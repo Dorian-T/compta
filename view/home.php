@@ -60,55 +60,47 @@
 			document.querySelector('#balanceChart select').addEventListener('change', function() {
 				var year = this.value;
 				[filteredMonths, filteredBalances, filteredIncomes, filteredExpenses] = filterDataForBalanceChart(months, balances, incomes, expenses, year);
-				createBalanceChart(balanceCanvas, balanceChart, filteredMonths, filteredBalances, filteredIncomes, filteredExpenses);
+				balanceChart = createBalanceChart(balanceCanvas, balanceChart, filteredMonths, filteredBalances, filteredIncomes, filteredExpenses);
 			});
 		</script>
 	</section>
 
-				updateChart();
-			}
+	<section id="frequencyChart">
+		<h2>Dépenses par fréquence</h2>
 
-			function updateChart() {
-				if (myChart !== null)
-					myChart.destroy();
+		<select>
+			<?php
+			var_dump($transactionsByFrequency[$frequency[0]]);
+			$years = array_unique(array_map(function($date) {
+				return substr($date, 0, 4);
+			}, array_keys(reset($transactionsByFrequency))));
+			sort($years);
+			?>
+			<?php foreach ($years as $year): ?>
+				<option value="<?= $year ?>" <?= $year === date('Y') ? 'selected' : '' ?>><?= $year ?></option>
+			<?php endforeach; ?>
+		</select>
 
-				myChart = new Chart(balanceChart, {
-					type: 'line',
-					data: {
-						labels: filteredLabels,
-						datasets: [
-							{
-								label: 'Solde',
-								data: filteredBalances,
-								backgroundColor: 'rgb(0, 0, 0)',
-								borderColor: 'rgb(0, 0, 0)',
-								borderWidth: 1
-							},
-							{
-								label: 'Revenus',
-								data: filteredIncomes,
-								backgroundColor: 'rgb(0, 255, 0)',
-								borderColor: 'rgb(0, 255, 0)',
-								borderWidth: 1
-							},
-							{
-								label: 'Dépenses',
-								data: filteredExpenses,
-								backgroundColor: 'rgb(255, 0, 0)',
-								borderColor: 'rgb(255, 0, 0)',
-								borderWidth: 1
-							}
-						]
-					}
-				});
-			}
+		<canvas width="400" height="200"></canvas>
 
-			filterData('<?= date('Y') ?>');
+		<script defer>
+			// Get data from PHP
+			var frequencies = <?= json_encode(array_keys($transactionsByFrequency)) ?>;
+			var transactionsByFrequency = <?= json_encode(array_values($transactionsByFrequency)) ?>;
 
-			document.querySelector('#balanceChart select').addEventListener('change', function() {
+			// Filter the data by year
+			var filteredTransactionsByFrequency = filterDataForFrequencyChart(transactionsByFrequency, '<?= date('Y') ?>');
+
+			// Create the chart
+			const frequencyCanvas = document.querySelector('#frequencyChart canvas');
+			frequencyChart = null;
+			frequencyChart = createFrequencyChart(frequencyCanvas, frequencyChart, frequencies, filteredTransactionsByFrequency);
+
+			// Update the chart when the year changes
+			document.querySelector('#frequencyChart select').addEventListener('change', function() {
 				var year = this.value;
-
-				filterData(year);
+				filteredTransactionsByFrequency = filterDataForFrequencyChart(transactionsByFrequency, year);
+				frequencyChart = createFrequencyChart(frequencyCanvas, frequencyChart, frequencies, filteredTransactionsByFrequency);
 			});
 		</script>
 	</section>
