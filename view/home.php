@@ -89,7 +89,7 @@
 			var transactionsByFrequency = <?= json_encode(array_values($transactionsByFrequency)) ?>;
 
 			// Filter the data by year
-			var filteredTransactionsByFrequency = filterDataForFrequencyChart(transactionsByFrequency, '<?= date('Y') ?>');
+			var filteredTransactionsByFrequency = filterDataByCategoryAndYear(transactionsByFrequency, '<?= date('Y') ?>');
 
 			// Create the chart
 			const frequencyCanvas = document.querySelector('#frequencyChart canvas');
@@ -99,15 +99,53 @@
 			// Update the chart when the year changes
 			document.querySelector('#frequencyChart select').addEventListener('change', function() {
 				var year = this.value;
-				filteredTransactionsByFrequency = filterDataForFrequencyChart(transactionsByFrequency, year);
+				filteredTransactionsByFrequency = filterDataByCategoryAndYear(transactionsByFrequency, year);
 				frequencyChart = createFrequencyChart(frequencyCanvas, frequencyChart, frequencies, filteredTransactionsByFrequency);
 			});
 		</script>
 	</section>
 
-	<canvas id="frequencyChart" width="400" height="200"></canvas>
+	<section id="categoryChart">
+		<h2>Dépenses par catégorie</h2>
 
-	<canvas id="categoryChart" width="400" height="200"></canvas>
+		<select>
+			<?php
+			$years = array_unique(array_map(function($date) {
+				return substr($date, 0, 4);
+			}, array_keys(reset($transactionsByCategory))));
+			sort($years);
+			?>
+			<?php foreach ($years as $year): ?>
+				<option value="<?= $year ?>" <?= $year === date('Y') ? 'selected' : '' ?>><?= $year ?></option>
+			<?php endforeach; ?>
+		</select>
+
+		<canvas width="400" height="200"></canvas>
+
+		<script defer>
+			console.log("Hello world");
+			// Get data from PHP
+			var categories = <?= json_encode(array_keys($transactionsByCategory)) ?>;
+			var transactionsByCategory = <?= json_encode(array_values($transactionsByCategory)) ?>;
+
+			// Filter the data by year
+			var filteredTransactionsByCategory = filterDataByCategoryAndYear(transactionsByCategory, '<?= date('Y') ?>');
+
+			// Create the chart
+			const categoryCanvas = document.querySelector('#categoryChart canvas');
+			categoryChart = null;
+			console.log("oui");
+			console.log(categories, filteredTransactionsByCategory);
+			categoryChart = createCategoryChart(categoryCanvas, categoryChart, categories, filteredTransactionsByCategory);
+
+			// Update the chart when the year changes
+			document.querySelector('#categoryChart select').addEventListener('change', function() {
+				var year = this.value;
+				filteredTransactionsByCategory = filterDataByCategoryAndYear(transactionsByCategory, year);
+				categoryChart = createCategoryChart(categoryCanvas, categoryChart, categories, filteredTransactionsByCategory);
+			});
+		</script>
+	</section>
 </main>
 
 <?php

@@ -4,6 +4,17 @@ function filterDataByYear(data, labels, year) {
 	return data.filter((_, index) => labels[index].startsWith(year));
 }
 
+function filterDataByCategoryAndYear(data, year) {
+	return data.map(data => {
+		let sum = 0;
+		Object.keys(data).forEach(date => {
+			if (date.startsWith(year.toString()))
+				sum += Number(data[date]);
+		});
+		return sum;
+	});
+}
+
 function autoColors(count) {
 	const colors = [];
 	for (let i = 0; i < count; i++) {
@@ -63,18 +74,6 @@ function createBalanceChart(canvas, chart, labels, balances, incomes, expenses) 
 
 // === Frequency chart ===
 
-function filterDataForFrequencyChart(frequencies, year) {
-	let filteredFrequencies = frequencies.map(frequency => {
-		let sum = 0;
-		Object.keys(frequency).forEach(date => {
-			if (date.startsWith(year.toString()))
-				sum += Number(frequency[date]);
-		});
-		return sum;
-	});
-	return filteredFrequencies;
-}
-
 function createFrequencyChart(canvas, chart, labels, frequencies) {
 	if (chart !== null)
 		chart.destroy();
@@ -88,6 +87,29 @@ function createFrequencyChart(canvas, chart, labels, frequencies) {
 					label: 'Dépense',
 					data: frequencies,
 					backgroundColor: autoColors(frequencies.length),
+					hoverOffset: 4
+				}
+			]
+		}
+	});
+}
+
+
+// === Category chart ===
+
+function createCategoryChart(canvas, chart, labels, categories) {
+	if (chart !== null)
+		chart.destroy();
+
+	return new Chart(canvas, {
+		type: 'pie',
+		data: {
+			labels: labels,
+			datasets: [
+				{
+					label: 'Dépense',
+					data: categories,
+					backgroundColor: autoColors(categories.length),
 					hoverOffset: 4
 				}
 			]
