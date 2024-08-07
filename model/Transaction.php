@@ -292,7 +292,10 @@ class Transaction {
 	 */
 	public static function getLastTransactions(): array {
 		$database = new DatabaseConnection();
-		$transactions = $database->execute('SELECT * FROM transactions ORDER BY date DESC LIMIT 10');
+		$transactions = $database->execute('SELECT *
+											FROM transactions
+											ORDER BY date DESC, banking_date DESC, description ASC
+											LIMIT 10');
 		$objects = [];
 
 		foreach($transactions as $transaction) {

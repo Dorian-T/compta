@@ -14,9 +14,9 @@
 	<header>
 		<nav>
 			<ul>
-				<li><a href="./">Accueil</a></li>
-				<li><a href="index.php?action=add">Ajouter</a></li>
-				<li><a href="index.php?action=bdd">Base de données</a></li>
+				<li><a tabindex="-1" href="./">Accueil</a></li>
+				<li><a tabindex="-1" href="index.php?action=add">Ajouter</a></li>
+				<li><a tabindex="-1" href="index.php?action=bdd">Base de données</a></li>
 			</ul>
 		</nav>
 	</header>

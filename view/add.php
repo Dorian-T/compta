@@ -28,7 +28,7 @@
 						<input type="text" name="description" placeholder="Description" required/>
 					</td>
 					<td>
-						<input type="number" name="amount" placeholder="Montant" required />
+						<input type="number" name="amount" placeholder="Montant" step="0.01" required />
 					</td>
 					<td>
 						<select name="bank_account" required>
