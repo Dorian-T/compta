@@ -10,8 +10,6 @@ require_once 'model/Frequency.php';
 require_once 'model/PaymentMethod.php';
 require_once 'model/Transaction.php';
 
-require_once 'model/model.php';
-
 require_once 'controller/controller.php';
 require_once 'controller/add.php';
 require_once 'controller/bdd.php';
