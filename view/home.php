@@ -18,7 +18,7 @@
 			<?php foreach ($accounts as $account): ?>
 				<tr>
 					<td><?= $account->getName() ?></td>
-					<td><?= $account->getBalance() ?> €</td>
+					<td><?= number_format($account->getBalance(), 2, '.', ' ') ?> €</td>
 				</tr>
 			<?php endforeach; ?>
 		</tbody>

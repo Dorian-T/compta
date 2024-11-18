@@ -4,37 +4,41 @@
 	max-width: 1200px;
 	margin: auto;
 
-	& h2 {
+	h2 {
 		text-align: center;
 	}
 
-	& table {
+	table {
 		grid-column: 1 / 4;
 		width: calc(100% - 20px);
 		margin: 10px;
+
+		td:nth-child(2) {
+			text-align: right;
+		}
 	}
 
 	& > *:not(table) {
 		width: 100%;
 	}
 
-	& #balanceChart {
+	#balanceChart {
 		grid-column: 4 / 13;
 	}
 
-	& #frequencyChart {
+	#frequencyChart {
 		grid-column: 1 / 4;
 	}
 
-	& #categoryChart {
+	#categoryChart {
 		grid-column: 4 / 7;
 	}
 
-	& #categoryChart + * {
+	#categoryChart + * {		/* TODO: Use the right name */
 		grid-column: 7 / 10;
 	}
 
-	& #categoryChart + * + * {
+	#categoryChart + * + * {	/* TODO: Use the right name */
 		grid-column: 10 / 13;
 	}
 }

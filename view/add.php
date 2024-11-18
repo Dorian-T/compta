@@ -11,7 +11,7 @@
 					<th>Description</th>
 					<th>Montant</th>
 					<th>Compte</th>
-					<th>Moyen de paiement</th>
+					<th>Moyen de<br>paiement</th>
 					<th>Fréquence</th>
 					<th>Catégorie</th>
 				</tr>
@@ -92,7 +92,7 @@
 		<thead>
 			<tr>
 				<th>Date</th>
-				<th>Date banquaire</th>
+				<th>Date<br>banquaire</th>
 				<th>Description</th>
 				<th>Montant</th>
 				<th>Compte</th>
@@ -104,7 +104,7 @@
 					<td><?= $transaction->getDate()->format('d/m/Y'); ?></td>
 					<td><?= $transaction->getBankingDate() === null ? '' : $transaction->getBankingDate()->format('d/m/Y'); ?></td>
 					<td><?= $transaction->getDescription(); ?></td>
-					<td><?= $transaction->getAmount(); ?></td>
+					<td><?= number_format((float) $transaction->getAmount(), 2, '.', ' '); ?> €</td>
 					<td><?= $transaction->getBankAccount()->getName(); ?></td>
 				</tr>
 			<?php endforeach; ?>

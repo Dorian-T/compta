@@ -29,7 +29,7 @@
 							<input type="text" name="description" value="<?= $transaction->getDescription(); ?>" required />
 						</td>
 						<td>
-							<input type="number" name="amount" value="<?= $transaction->getAmount(); ?>" required />
+							<input type="number" name="amount" step="0.01" value="<?= $transaction->getAmount(); ?>" required />
 						</td>
 						<td>
 							<select name="bank_account" required>
