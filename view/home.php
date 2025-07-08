@@ -15,12 +15,19 @@
 			</tr>
 		</thead>
 		<tbody>
+			<?php $sum = 0.0; ?>
 			<?php foreach ($accounts as $account): ?>
+				<?php $balance = $account->getBalance(); ?>
+				<?php $sum += $balance; ?>
 				<tr>
 					<td><?= $account->getName() ?></td>
-					<td><?= number_format($account->getBalance(), 2, '.', ' ') ?> €</td>
+					<td><?= number_format($balance, 2, '.', ' ') ?> €</td>
 				</tr>
 			<?php endforeach; ?>
+			<tr>
+				<td><strong>Total</strong></td>
+				<td><strong><?= number_format($sum, 2, '.', ' ') ?> €</strong></td>
+			</tr>
 		</tbody>
 	</table>
 
