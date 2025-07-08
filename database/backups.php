@@ -26,33 +26,33 @@ if(empty($backups) ||
 	DateTime::createFromFormat('Y-m-d_H-i-s', str_replace(['backup_', '.sql'], '', $backups[0]))->getTimestamp() < time() - 7 * 24 * 60 * 60) {
 	// Create a new backup
 	$database = new DatabaseConnection();
-	
+
 	$backupFile = BACKUP_DIR . '/backup_' . date('Y-m-d_H-i-s') . '.sql';
 	$fileHandle = fopen($backupFile, 'w');
-	
+
 	// Get all tables
 	$tables = $database->execute('SHOW TABLES');
-	
+
 	// Loop through all tables
 	foreach ($tables as $tableRow) {
 		$tableName = $tableRow["Tables_in_compta"];
-	
+
 		// Write the table structure
 		$createTableResult = $database->execute("SHOW CREATE TABLE $tableName");
 		$createTableSql = $createTableResult[0]["Create Table"];
 		fwrite($fileHandle, "\n\n" . $createTableSql . ";\n\n");
-		
+
 		// Write the table data
 		$rows = $database->execute("SELECT * FROM $tableName");
 		foreach ($rows as $row) {
 			$rowValues = array_map(function($value) {
-				return "'" . addslashes($value) . "'";
+				return $value === null ? 'NULL' : "'" . addslashes($value) . "'";
 			}, $row);
 			$rowValuesString = implode(", ", $rowValues);
 			fwrite($fileHandle, "INSERT INTO $tableName VALUES ($rowValuesString);\n");
 		}
 	}
-	
+
 	fclose($fileHandle);
 
 
