@@ -130,7 +130,6 @@
 		<canvas></canvas>
 
 		<script defer>
-			console.log("Hello world");
 			// Get data from PHP
 			var categories = <?= json_encode(array_keys($transactionsByCategory)) ?>;
 			var transactionsByCategory = <?= json_encode(array_values($transactionsByCategory)) ?>;
@@ -141,8 +140,6 @@
 			// Create the chart
 			const categoryCanvas = document.querySelector('#categoryChart canvas');
 			categoryChart = null;
-			console.log("oui");
-			console.log(categories, filteredTransactionsByCategory);
 			categoryChart = createCategoryChart(categoryCanvas, categoryChart, categories, filteredTransactionsByCategory);
 
 			// Update the chart when the year changes

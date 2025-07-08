@@ -15,9 +15,26 @@ class HomeController extends Controller {
 		$accounts = BankAccount::getAll();
 
 		// Balance chart
-		$balances = Transaction::getBalances();
-		$incomes = Transaction::getIncomes();
-		$expenses = Transaction::getExpenses();
+		$rawBalances = Transaction::getBalances();
+		$rawIncomes = Transaction::getIncomes();
+		$rawExpenses = Transaction::getExpenses();
+
+		// Ensure all months are represented in the balances, incomes, and expenses arrays
+		$allMonths = array_unique(array_merge(
+			array_keys($rawBalances),
+			array_keys($rawIncomes),
+			array_keys($rawExpenses)
+		));
+		sort($allMonths);
+
+		$balances = [];
+		$incomes = [];
+		$expenses = [];
+		foreach ($allMonths as $month) {
+			$balances[$month] = isset($rawBalances[$month]) ? $rawBalances[$month] : 0;
+			$incomes[$month] = isset($rawIncomes[$month]) ? $rawIncomes[$month] : 0;
+			$expenses[$month] = isset($rawExpenses[$month]) ? $rawExpenses[$month] : 0;
+		}
 
 		// Frequencies chart
 		$transactionsByFrequency = Transaction::getByFrequency();
