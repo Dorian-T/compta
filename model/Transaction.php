@@ -51,7 +51,7 @@ class Transaction {
 	 * The category of the transaction.
 	 */
 	private ?Category $category;
-	
+
 
 	// === Constructor ===
 
@@ -284,6 +284,41 @@ class Transaction {
 	}
 
 	/**
+	 * Retrieves the transactions by year and month.
+	 *
+	 * @param int $year The year to filter transactions.
+	 * @param int $month The month to filter transactions.
+	 * @return array An array of transactions for the specified year and month.
+	 */
+	public static function getByYearAndMonth(int $year, int $month): array {
+		$database = new DatabaseConnection();
+		$results = $database->execute('SELECT T.id, T.date, T.banking_date, T.description, T.amount, B.id AS bank_account_id, B.name AS bank_account_name, P.id AS payment_method_id, P.name AS payment_method_name, F.id AS frequency_id, F.name AS frequency_name, C.id AS category_id, C.name AS category_name, C.type AS category_type
+										FROM transactions T JOIN bank_accounts B ON T.bank_account = B.id
+											JOIN payment_methods P ON T.payment_method = P.id
+											JOIN frequencies F ON T.frequency = F.id
+											LEFT JOIN categories C ON T.category = C.id
+										WHERE YEAR(T.date) = ? AND MONTH(T.date) = ?
+										ORDER BY T.date DESC', [$year, $month]);
+		$objects = [];
+
+		foreach($results as $transaction) {
+			$objects[] = new Transaction(
+				$transaction['id'],
+				new DateTime($transaction['date']),
+				empty($transaction['banking_date']) ? null : new DateTime($transaction['banking_date']),
+				$transaction['description'],
+				$transaction['amount'],
+				new BankAccount($transaction['bank_account_id'], $transaction['bank_account_name']),
+				new PaymentMethod($transaction['payment_method_id'], $transaction['payment_method_name']),
+				new Frequency($transaction['frequency_id'], $transaction['frequency_name']),
+				empty($transaction['category_id']) ? null : new Category($transaction['category_id'], $transaction['category_name'], $transaction['category_type'])
+			);
+		}
+
+		return $objects;
+	}
+
+	/**
 	 * Gets the 10 last transactions.
 	 *
 	 * @param int $limit The number of transactions to get.
@@ -399,5 +434,16 @@ class Transaction {
 			$sumsByCategory[$result['category']][$month] = $result['total_amount'];
 		}
 		return $sumsByCategory;
+	}
+
+	/**
+	 * Retrieves the year of the first transaction.
+	 *
+	 * @return int The year of the first transaction.
+	 */
+	public static function getFirstYear(): int {
+		$database = new DatabaseConnection();
+		$result = $database->execute('SELECT MIN(YEAR(date)) AS first_year FROM transactions');
+		return (int) $result[0]['first_year'];
 	}
 }

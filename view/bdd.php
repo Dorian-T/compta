@@ -1,6 +1,34 @@
 <?php ob_start(); ?>
 
 <main id="bdd">
+	<form action="index.php?action=bdd" method="post">
+		<select name="year">
+			<?php for ($i = $firstYear; $i <= date('Y'); $i++): ?>
+				<option value="<?= $i ?>" <?= $i == date('Y') ? 'selected' : ''; ?>><?= $i ?></option>
+			<?php endfor; ?>
+		</select>
+		<select name="month">
+			<?php
+			$months = [
+				'01' => 'Janvier',
+				'02' => 'Février',
+				'03' => 'Mars',
+				'04' => 'Avril',
+				'05' => 'Mai',
+				'06' => 'Juin',
+				'07' => 'Juillet',
+				'08' => 'Août',
+				'09' => 'Septembre',
+				'10' => 'Octobre',
+				'11' => 'Novembre',
+				'12' => 'Décembre'
+			];
+			foreach ($months as $key => $value): ?>
+				<option value="<?= $key ?>" <?= $key === date('m') ? 'selected' : ''; ?>><?= $value ?></option>
+			<?php endforeach; ?>
+		</select>
+		<input type="submit" value="Afficher" />
+	</form>
 	<table>
 		<thead>
 			<tr>

@@ -23,7 +23,13 @@ class BDDController extends Controller {
 		$paymentMethods = PaymentMethod::getAll();
 		$frequencies = Frequency::getAll();
 		$categories = Category::getAll();
-		$transactions = Transaction::getAll();
+		// $transactions = Transaction::getByYearAndMonth((int) date('Y'), (int) date('m'));
+		$transactions = Transaction::getByYearAndMonth(
+			isset($_POST['year']) ? (int) $_POST['year'] : (int) date('Y'),
+			isset($_POST['month']) ? (int) $_POST['month'] : (int) date('m')
+		);
+		// $transactions = Transaction::getByYearAndMonth(2025, 3);
+		$firstYear = Transaction::getFirstYear();
 
 		require_once 'view/bdd.php';
 	}
