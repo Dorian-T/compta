@@ -38,12 +38,7 @@ class Category {
 	public function __construct(int $id, string $name, int $type) {
 		$this->id = $id;
 		$this->name = $name;
-		if($type === 0)
-			$this->type = false;
-		elseif($type === 1)
-			$this->type = true;
-		else
-			throw new InvalidArgumentException('Invalid type for category.');
+		$this->type = $type;
 	}
 
 

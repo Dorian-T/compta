@@ -54,9 +54,9 @@
 					<td>
 						<select name="category">
 							<?php foreach ($categories as $category): ?>
-								<option class="<?= $category->getType() ?>" value="<?= $category->getID(); ?>"><?= $category->getName(); ?></option>
+								<option class="<?= $category->getType() ? '1' : '0' ?>" value="<?= $category->getID(); ?>"><?= $category->getName(); ?></option>
 							<?php endforeach; ?>
-							<option class="01" value="">Autre</option>
+							<option class="0 1" value="">Autre</option>
 						</select>
 					</td>
 					<td>
@@ -67,9 +67,9 @@
 				</tr>
 			</tbody>
 		</table>
-		<!-- <script defer> // TODO: Fix this
-			document.getElementById('amount').addEventListener('change', function(e) {
-				var categorySelect = document.getElementById('category');
+		<script defer>
+			document.querySelector('input[name="amount"]').addEventListener('change', function(e) {
+				var categorySelect = document.querySelector('select[name="category"]');
 				console.log(categorySelect);
 				var options = Array.from(categorySelect.getElementsByTagName('option'));
 				console.log(options);
@@ -77,14 +77,13 @@
 				console.log(amount);
 
 				options.forEach(function(option) {
-					if((option.classList.contains('0') && amount < 0) || (option.classList.contains('1') && amount > 0))
+					if((option.classList.contains('0') && amount < 0) || (option.classList.contains('1') && amount > 0) || amount == 0)
 						option.style.display = 'block';
 					else
 						option.style.display = 'none';
 				});
-						
 			});
-		</script> -->
+		</script>
 	</form>
 
 	<h1>10 dernières transactions</h1>
