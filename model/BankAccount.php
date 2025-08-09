@@ -65,7 +65,7 @@ class BankAccount {
 	 */
 	public static function getAll(): array {
 		$database = new DatabaseConnection();
-		$accounts = $database->execute('SELECT * FROM bank_accounts');
+		$accounts = $database->execute('SELECT * FROM bank_accounts ORDER BY name');
 		$bankAccounts = [];
 
 		foreach($accounts as $account)
