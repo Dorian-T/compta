@@ -73,7 +73,6 @@ function createFrequencyChart(canvas, chart, labels, frequencies) {
 			labels: labels,
 			datasets: [
 				{
-					label: 'Dépense',
 					data: frequencies,
 					backgroundColor: autoColors(frequencies.length),
 					hoverOffset: 4
