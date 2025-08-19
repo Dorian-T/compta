@@ -36,9 +36,6 @@ class HomeController extends Controller {
 			$expenses[$month] = isset($rawExpenses[$month]) ? $rawExpenses[$month] : 0;
 		}
 
-		// Frequencies chart
-		$transactionsByFrequency = Transaction::getByFrequency();
-
 		// Categories chart
 		$transactionsByCategory = Transaction::getSumByCategory();
 		$category_csv = [];
@@ -50,6 +47,11 @@ class HomeController extends Controller {
 					$category_csv[$year][] = "Banque, $category, " . abs($total);
 			}
 		}
+
+		// Frequencies charts
+		$frequencies = Frequency::getAllNames();
+		$incomesByFrequency = Transaction::getIncomesByFrequency();
+		$expensesByFrequency = Transaction::getExpensesByFrequency();
 
 		require_once 'view/home.php';
 	}

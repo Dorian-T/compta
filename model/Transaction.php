@@ -399,22 +399,43 @@ class Transaction {
 	}
 
 	/**
-	 * Retrieves the outcomes by frequency.
+	 * Retrieves income transactions grouped by their frequency.
 	 *
-	 * @return array The outcomes by frequency.
+	 * @return array An array containing income transactions organized by frequency.
 	 */
-	public static function getByFrequency(): array {
+	public static function getIncomesByFrequency(): array {
 		$database = new DatabaseConnection();
-		$results = $database->execute('SELECT F.name AS frequency, YEAR(T.date) AS year, MONTH(T.date) AS month, SUM(T.amount) AS total_amount
-										FROM transactions T JOIN frequencies F ON T.frequency = F.id
-										WHERE T.amount < 0
-										GROUP BY F.name, YEAR(T.date), MONTH(T.date)');
-		$sumsByFrequency = [];
+		$results = $database->execute('
+			SELECT F.name AS frequency, YEAR(T.date) AS year, SUM(T.amount) AS total_amount
+			FROM transactions T JOIN frequencies F ON T.frequency = F.id
+			WHERE T.amount > 0
+			GROUP BY YEAR(T.date), F.name
+		');
+		$array = [];
 		foreach ($results as $result) {
-			$month = $result['year'] . '-' . sprintf('%02d', $result['month']); // Format: YYYY-MM
-			$sumsByFrequency[$result['frequency']][$month] = $result['total_amount'];
+			$array[$result['year']][$result['frequency']] = (float) $result['total_amount'];
 		}
-		return $sumsByFrequency;
+		return $array;
+	}
+
+	/**
+	 * Retrieves expense transactions grouped by their frequency.
+	 *
+	 * @return array An array containing expense transactions organized by frequency.
+	 */
+	public static function getExpensesByFrequency(): array {
+		$database = new DatabaseConnection();
+		$results = $database->execute('
+			SELECT F.name AS frequency, YEAR(T.date) AS year, SUM(T.amount) AS total_amount
+			FROM transactions T JOIN frequencies F ON T.frequency = F.id
+			WHERE T.amount < 0
+			GROUP BY YEAR(T.date), F.name
+		');
+		$array = [];
+		foreach ($results as $result) {
+			$array[$result['year']][$result['frequency']] = (float) $result['total_amount'];
+		}
+		return $array;
 	}
 
 	/**
@@ -424,12 +445,12 @@ class Transaction {
 	 */
 	public static function getSumByCategory(): array {
 		$database = new DatabaseConnection();
-		$results = $database->execute(
-			'SELECT C.name AS category, YEAR(T.date) AS year, SUM(T.amount) AS total_amount
+		$results = $database->execute('
+			SELECT C.name AS category, YEAR(T.date) AS year, SUM(T.amount) AS total_amount
 			FROM transactions T JOIN categories C ON T.category = C.id
 			WHERE C.name != "Epargne"
-			GROUP BY YEAR(T.date), C.name;'
-		);
+			GROUP BY YEAR(T.date), C.name;
+		');
 		$array = [];
 		foreach ($results as $result) {
 			$array[$result['year']][$result['category']] = $result['total_amount'];

@@ -30,7 +30,11 @@
 		grid-column: 1 / 7;
 	}
 
-	#frequencyChart {
+	#incomeFrequencyChart {
 		grid-column: 7 / 10;
+	}
+
+	#expenseFrequencyChart {
+		grid-column: 10 / 13;
 	}
 }

@@ -72,6 +72,16 @@ class Frequency {
 	}
 
 	/**
+	 * Get all frequencies' names.
+	 *
+	 * @return array The names of all frequencies.
+	 */
+	public static function getAllNames(): array {
+		$frequencies = self::getAll();
+		return array_map(fn($frequency) => $frequency->getName(), $frequencies);
+	}
+
+	/**
 	 * Gets a frequency by its id.
 	 *
 	 * @param int $id The id of the frequency.

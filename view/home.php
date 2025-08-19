@@ -113,19 +113,16 @@
 		</script>
 	</section>
 
-	<section id="frequencyChart">
-		<h2>Dépenses par fréquence</h2>
+	<section id="incomeFrequencyChart">
+		<h2>Revenus par fréquence</h2>
 
 		<select>
 			<?php
-			var_dump($transactionsByFrequency[$frequency[0]]);
-			$years = array_unique(array_map(function($date) {
-				return substr($date, 0, 4);
-			}, array_keys(reset($transactionsByFrequency))));
+			$years = array_keys($incomesByFrequency);
 			sort($years);
 			?>
 			<?php foreach ($years as $year): ?>
-				<option value="<?= $year ?>" <?= $year === date('Y') ? 'selected' : '' ?>><?= $year ?></option>
+				<option value="<?= $year ?>" <?= $year == date('Y') ? 'selected' : '' ?>><?= $year ?></option>
 			<?php endforeach; ?>
 		</select>
 
@@ -133,22 +130,51 @@
 
 		<script defer>
 			// Get data from PHP
-			var frequencies = <?= json_encode(array_keys($transactionsByFrequency)) ?>;
-			var transactionsByFrequency = <?= json_encode(array_values($transactionsByFrequency)) ?>;
-
-			// Filter the data by year
-			var filteredTransactionsByFrequency = filterDataByCategoryAndYear(transactionsByFrequency, '<?= date('Y') ?>');
+			var i_frequencies = <?= json_encode($frequencies) ?>;
+			var i_transactions = <?= json_encode($incomesByFrequency) ?>;
 
 			// Create the chart
-			const frequencyCanvas = document.querySelector('#frequencyChart canvas');
-			frequencyChart = null;
-			frequencyChart = createFrequencyChart(frequencyCanvas, frequencyChart, frequencies, filteredTransactionsByFrequency);
+			const i_canvas = document.querySelector('#incomeFrequencyChart canvas');
+			i_chart = null;
+			i_chart = createFrequencyChart(i_canvas, i_chart, i_frequencies, Object.values(i_transactions[(new Date().getFullYear())]));
 
 			// Update the chart when the year changes
-			document.querySelector('#frequencyChart select').addEventListener('change', function() {
+			document.querySelector('#incomeFrequencyChart select').addEventListener('change', function() {
 				var year = this.value;
-				filteredTransactionsByFrequency = filterDataByCategoryAndYear(transactionsByFrequency, year);
-				frequencyChart = createFrequencyChart(frequencyCanvas, frequencyChart, frequencies, filteredTransactionsByFrequency);
+				i_chart = createFrequencyChart(i_canvas, i_chart, i_frequencies, Object.values(i_transactions[year]));
+			});
+		</script>
+	</section>
+
+	<section id="expenseFrequencyChart">
+		<h2>Dépenses par fréquence</h2>
+
+		<select>
+			<?php
+			$years = array_keys($expensesByFrequency);
+			sort($years);
+			?>
+			<?php foreach ($years as $year): ?>
+				<option value="<?= $year ?>" <?= $year == date('Y') ? 'selected' : '' ?>><?= $year ?></option>
+			<?php endforeach; ?>
+		</select>
+
+		<canvas></canvas>
+
+		<script defer>
+			// Get data from PHP
+			var e_frequencies = <?= json_encode($frequencies) ?>;
+			var e_transactions = <?= json_encode($expensesByFrequency) ?>;
+
+			// Create the chart
+			const e_canvas = document.querySelector('#expenseFrequencyChart canvas');
+			e_chart = null;
+			e_chart = createFrequencyChart(e_canvas, e_chart, e_frequencies, Object.values(e_transactions[(new Date().getFullYear())]));
+
+			// Update the chart when the year changes
+			document.querySelector('#expenseFrequencyChart select').addEventListener('change', function() {
+				var year = this.value;
+				e_chart = createFrequencyChart(e_canvas, e_chart, e_frequencies, Object.values(e_transactions[year]));
 			});
 		</script>
 	</section>
