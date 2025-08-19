@@ -26,19 +26,11 @@
 		grid-column: 4 / 13;
 	}
 
-	#frequencyChart {
-		grid-column: 1 / 4;
-	}
-
 	#categoryChart {
-		grid-column: 4 / 7;
+		grid-column: 1 / 7;
 	}
 
-	#categoryChart + * {		/* TODO: Use the right name */
+	#frequencyChart {
 		grid-column: 7 / 10;
-	}
-
-	#categoryChart + * + * {	/* TODO: Use the right name */
-		grid-column: 10 / 13;
 	}
 }

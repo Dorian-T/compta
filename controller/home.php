@@ -40,7 +40,16 @@ class HomeController extends Controller {
 		$transactionsByFrequency = Transaction::getByFrequency();
 
 		// Categories chart
-		$transactionsByCategory = Transaction::getByCategory();
+		$transactionsByCategory = Transaction::getSumByCategory();
+		$category_csv = [];
+		foreach ($transactionsByCategory as $year => $categories) {
+			foreach ($categories as $category => $total) {
+				if ($total > 0)
+					$category_csv[$year][] = "$category, Banque, $total";
+				else
+					$category_csv[$year][] = "Banque, $category, " . abs($total);
+			}
+		}
 
 		require_once 'view/home.php';
 	}

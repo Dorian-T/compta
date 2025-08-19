@@ -418,22 +418,23 @@ class Transaction {
 	}
 
 	/**
-	 * Retrieves the outcomes by category.
+	 * Retrieves the transactions by category.
 	 *
-	 * @return array The outcomes by category.
+	 * @return array An associative array of sum transactions grouped by year and category.
 	 */
-	public static function getByCategory(): array {
+	public static function getSumByCategory(): array {
 		$database = new DatabaseConnection();
-		$results = $database->execute('SELECT C.name AS category, YEAR(T.date) AS year, MONTH(T.date) AS month, SUM(T.amount) AS total_amount
-										FROM transactions T JOIN categories C ON T.category = C.id
-										WHERE T.amount < 0
-										GROUP BY C.name, YEAR(T.date), MONTH(T.date)');
-		$sumsByCategory = [];
+		$results = $database->execute(
+			'SELECT C.name AS category, YEAR(T.date) AS year, SUM(T.amount) AS total_amount
+			FROM transactions T JOIN categories C ON T.category = C.id
+			WHERE C.name != "Epargne"
+			GROUP BY YEAR(T.date), C.name;'
+		);
+		$array = [];
 		foreach ($results as $result) {
-			$month = $result['year'] . '-' . sprintf('%02d', $result['month']); // Format: YYYY-MM
-			$sumsByCategory[$result['category']][$month] = $result['total_amount'];
+			$array[$result['year']][$result['category']] = $result['total_amount'];
 		}
-		return $sumsByCategory;
+		return $array;
 	}
 
 	/**

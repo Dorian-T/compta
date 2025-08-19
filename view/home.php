@@ -2,6 +2,10 @@
 
 <main id="home">
 	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+	<script>
+		mermaid.initialize({ startOnLoad: true });
+	</script>
 	<script src="js/home.js"></script>
 
 	<table>
@@ -72,6 +76,43 @@
 		</script>
 	</section>
 
+	<section id="categoryChart">
+		<h2>Flux d'argent par catégorie</h2>
+
+		<select>
+			<?php
+			$years = array_keys($category_csv);
+			sort($years);
+			?>
+			<?php foreach ($years as $year): ?>
+				<option value="<?= $year ?>" <?= $year == date('Y') ? 'selected' : '' ?>><?= $year ?></option>
+			<?php endforeach; ?>
+		</select>
+
+		<div class="mermaid"></div>
+
+		<script defer>
+			async function mermaidDraw(definition, element) {
+				const {svg} = await mermaid.render('graphDiv', definition);
+				element.innerHTML = svg;
+			}
+
+			// Get data from PHP
+			var categoryData = <?= json_encode($category_csv) ?>;
+
+			// Create the Sankey diagram
+			document.querySelector('#categoryChart .mermaid').innerHTML = "sankey-beta\n" + categoryData[(new Date().getFullYear())].join('\n');
+
+			// Update the Sankey diagram when the year changes
+			document.querySelector('#categoryChart select').addEventListener('change', function() {
+				var year = this.value;
+				diagram = document.querySelector('#categoryChart .mermaid');
+				graphDefinition = "sankey-beta\n" + categoryData[year].join('\n');
+				mermaidDraw(graphDefinition, diagram);
+			});
+		</script>
+	</section>
+
 	<section id="frequencyChart">
 		<h2>Dépenses par fréquence</h2>
 
@@ -110,53 +151,6 @@
 				frequencyChart = createFrequencyChart(frequencyCanvas, frequencyChart, frequencies, filteredTransactionsByFrequency);
 			});
 		</script>
-	</section>
-
-	<section id="categoryChart">
-		<h2>Dépenses par catégorie</h2>
-
-		<select>
-			<?php
-			$years = array_unique(array_map(function($date) {
-				return substr($date, 0, 4);
-			}, array_keys(reset($transactionsByCategory))));
-			sort($years);
-			?>
-			<?php foreach ($years as $year): ?>
-				<option value="<?= $year ?>" <?= $year === date('Y') ? 'selected' : '' ?>><?= $year ?></option>
-			<?php endforeach; ?>
-		</select>
-
-		<canvas></canvas>
-
-		<script defer>
-			// Get data from PHP
-			var categories = <?= json_encode(array_keys($transactionsByCategory)) ?>;
-			var transactionsByCategory = <?= json_encode(array_values($transactionsByCategory)) ?>;
-
-			// Filter the data by year
-			var filteredTransactionsByCategory = filterDataByCategoryAndYear(transactionsByCategory, '<?= date('Y') ?>');
-
-			// Create the chart
-			const categoryCanvas = document.querySelector('#categoryChart canvas');
-			categoryChart = null;
-			categoryChart = createCategoryChart(categoryCanvas, categoryChart, categories, filteredTransactionsByCategory);
-
-			// Update the chart when the year changes
-			document.querySelector('#categoryChart select').addEventListener('change', function() {
-				var year = this.value;
-				filteredTransactionsByCategory = filterDataByCategoryAndYear(transactionsByCategory, year);
-				categoryChart = createCategoryChart(categoryCanvas, categoryChart, categories, filteredTransactionsByCategory);
-			});
-		</script>
-	</section>
-
-	<section>
-		<h2>Recettes par fréquence</h2>
-	</section>
-
-	<section>
-		<h2>Recettes par catégorie</h2>
 	</section>
 </main>
 
