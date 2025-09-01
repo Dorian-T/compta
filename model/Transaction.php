@@ -357,7 +357,14 @@ class Transaction {
 	 */
 	public static function getBalances(): array {
 		$database = new DatabaseConnection();
-		$results = $database->execute('SELECT YEAR(date) AS year, MONTH(date) AS month, SUM(amount) AS total_amount FROM transactions GROUP BY YEAR(date), MONTH(date)');
+		$results = $database->execute('
+			SELECT YEAR(T.date) AS year, MONTH(T.date) AS month, SUM(T.amount) AS total_amount
+			FROM transactions T
+				LEFT JOIN categories C ON T.category = C.id
+			WHERE T.category IS NULL
+				OR C.name != "Epargne"
+			GROUP BY YEAR(T.date), MONTH(T.date)
+		');
 		$sumsByMonth = [];
 		foreach ($results as $result) {
 			$key = $result['year'] . '-' . sprintf('%02d', $result['month']); // Format: YYYY-MM
@@ -374,11 +381,12 @@ class Transaction {
 	public static function getExpenses(): array {
 		$database = new DatabaseConnection();
 		$results = $database->execute('
-			SELECT YEAR(date) AS year, MONTH(date) AS month, SUM(amount) AS total_amount
-			FROM transactions
-				JOIN categories C ON transactions.category = C.id
-			WHERE amount < 0 AND C.name != "Epargne"
-			GROUP BY YEAR(date), MONTH(date)
+			SELECT YEAR(T.date) AS year, MONTH(T.date) AS month, SUM(T.amount) AS total_amount
+			FROM transactions T
+				LEFT JOIN categories C ON T.category = C.id
+			WHERE T.amount < 0
+				AND (T.category IS NULL OR C.name != "Epargne")
+			GROUP BY YEAR(T.date), MONTH(T.date)
 		');
 		$expensesByMonth = [];
 		foreach ($results as $result) {
@@ -396,11 +404,12 @@ class Transaction {
 	public static function getIncomes(): array {
 		$database = new DatabaseConnection();
 		$results = $database->execute('
-			SELECT YEAR(date) AS year, MONTH(date) AS month, SUM(amount) AS total_amount
-			FROM transactions
-				JOIN categories C ON transactions.category = C.id
-			WHERE amount > 0 AND C.name != "Epargne"
-			GROUP BY YEAR(date), MONTH(date)
+			SELECT YEAR(T.date) AS year, MONTH(T.date) AS month, SUM(T.amount) AS total_amount
+			FROM transactions T
+				LEFT JOIN categories C ON T.category = C.id
+			WHERE T.amount > 0
+				AND (C.name IS NULL OR C.name != "Epargne")
+			GROUP BY YEAR(T.date), MONTH(T.date)
 		');
 		$incomesByMonth = [];
 		foreach ($results as $result) {
@@ -422,8 +431,9 @@ class Transaction {
 			SELECT F.name AS frequency, YEAR(T.date) AS year, SUM(T.amount) AS total_amount
 			FROM transactions T
 				JOIN frequencies F ON T.frequency = F.id
-				JOIN categories C ON T.category = C.id
-			WHERE T.amount > 0 AND C.name != "Epargne"
+				LEFT JOIN categories C ON T.category = C.id
+			WHERE T.amount > 0
+				AND (C.name IS NULL OR C.name != "Epargne")
 			GROUP BY YEAR(T.date), F.name
 		');
 		$array = [];
@@ -445,8 +455,9 @@ class Transaction {
 			SELECT F.name AS frequency, YEAR(T.date) AS year, SUM(T.amount) AS total_amount
 			FROM transactions T
 				JOIN frequencies F ON T.frequency = F.id
-				JOIN categories C ON T.category = C.id
-			WHERE T.amount < 0 AND C.name != "Epargne"
+				LEFT JOIN categories C ON T.category = C.id
+			WHERE T.amount < 0
+				AND (C.name IS NULL OR C.name != "Epargne")
 			GROUP BY YEAR(T.date), F.name
 		');
 		$array = [];
