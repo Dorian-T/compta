@@ -10,7 +10,7 @@ class HomeController extends Controller {
 	/**
 	 * Renders the home page.
 	 */
-	public function render() {
+	public function render(): void {
 		// Balance table
 		$accounts = BankAccount::getAll();
 

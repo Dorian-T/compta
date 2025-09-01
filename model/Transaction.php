@@ -373,7 +373,13 @@ class Transaction {
 	 */
 	public static function getExpenses(): array {
 		$database = new DatabaseConnection();
-		$results = $database->execute('SELECT YEAR(date) AS year, MONTH(date) AS month, SUM(amount) AS total_amount FROM transactions WHERE amount < 0 GROUP BY YEAR(date), MONTH(date)');
+		$results = $database->execute('
+			SELECT YEAR(date) AS year, MONTH(date) AS month, SUM(amount) AS total_amount
+			FROM transactions
+				JOIN categories C ON transactions.category = C.id
+			WHERE amount < 0 AND C.name != "Epargne"
+			GROUP BY YEAR(date), MONTH(date)
+		');
 		$expensesByMonth = [];
 		foreach ($results as $result) {
 			$key = $result['year'] . '-' . sprintf('%02d', $result['month']); // Format: YYYY-MM
@@ -389,7 +395,13 @@ class Transaction {
 	 */
 	public static function getIncomes(): array {
 		$database = new DatabaseConnection();
-		$results = $database->execute('SELECT YEAR(date) AS year, MONTH(date) AS month, SUM(amount) AS total_amount FROM transactions WHERE amount > 0 GROUP BY YEAR(date), MONTH(date)');
+		$results = $database->execute('
+			SELECT YEAR(date) AS year, MONTH(date) AS month, SUM(amount) AS total_amount
+			FROM transactions
+				JOIN categories C ON transactions.category = C.id
+			WHERE amount > 0 AND C.name != "Epargne"
+			GROUP BY YEAR(date), MONTH(date)
+		');
 		$incomesByMonth = [];
 		foreach ($results as $result) {
 			$key = $result['year'] . '-' . sprintf('%02d', $result['month']); // Format: YYYY-MM
@@ -400,6 +412,7 @@ class Transaction {
 
 	/**
 	 * Retrieves income transactions grouped by their frequency.
+	 * Excludes "Epargne" category.
 	 *
 	 * @return array An array containing income transactions organized by frequency.
 	 */
@@ -407,8 +420,10 @@ class Transaction {
 		$database = new DatabaseConnection();
 		$results = $database->execute('
 			SELECT F.name AS frequency, YEAR(T.date) AS year, SUM(T.amount) AS total_amount
-			FROM transactions T JOIN frequencies F ON T.frequency = F.id
-			WHERE T.amount > 0
+			FROM transactions T
+				JOIN frequencies F ON T.frequency = F.id
+				JOIN categories C ON T.category = C.id
+			WHERE T.amount > 0 AND C.name != "Epargne"
 			GROUP BY YEAR(T.date), F.name
 		');
 		$array = [];
@@ -420,6 +435,7 @@ class Transaction {
 
 	/**
 	 * Retrieves expense transactions grouped by their frequency.
+	 * Excludes "Epargne" category.
 	 *
 	 * @return array An array containing expense transactions organized by frequency.
 	 */
@@ -427,8 +443,10 @@ class Transaction {
 		$database = new DatabaseConnection();
 		$results = $database->execute('
 			SELECT F.name AS frequency, YEAR(T.date) AS year, SUM(T.amount) AS total_amount
-			FROM transactions T JOIN frequencies F ON T.frequency = F.id
-			WHERE T.amount < 0
+			FROM transactions T
+				JOIN frequencies F ON T.frequency = F.id
+				JOIN categories C ON T.category = C.id
+			WHERE T.amount < 0 AND C.name != "Epargne"
 			GROUP BY YEAR(T.date), F.name
 		');
 		$array = [];
